@@ -2,8 +2,8 @@ import express, { type Express } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import pinoHttp from "pino-http";
-import path from "path";
-import { fileURLToPath } from "url";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import router from "./routes";
 import { logger } from "./lib/logger";
 
@@ -43,7 +43,7 @@ app.use(express.urlencoded({ extended: true }));
 // API routes
 app.use("/api", router);
 
-// Serve React frontend
+// React frontend
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -55,7 +55,11 @@ const frontendPath = path.resolve(
 app.use(express.static(frontendPath));
 
 // React SPA fallback
-app.get("*", (_req, res) => {
+app.use((req, res, next) => {
+  if (req.method !== "GET" || req.path.startsWith("/api")) {
+    return next();
+  }
+
   res.sendFile(path.join(frontendPath, "index.html"));
 });
 
