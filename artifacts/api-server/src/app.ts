@@ -2,10 +2,13 @@ import express, { type Express } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import pinoHttp from "pino-http";
+import path from "path";
+import { fileURLToPath } from "url";
 import router from "./routes";
 import { logger } from "./lib/logger";
 
 const app: Express = express();
+
 const sessionSecret = process.env.SESSION_SECRET;
 
 if (!sessionSecret) {
@@ -31,11 +34,29 @@ app.use(
     },
   }),
 );
+
 app.use(cors());
 app.use(cookieParser(sessionSecret));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// API routes
 app.use("/api", router);
+
+// Serve React frontend
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const frontendPath = path.resolve(
+  __dirname,
+  "../../kraken-study/dist/public",
+);
+
+app.use(express.static(frontendPath));
+
+// React SPA fallback
+app.get("*", (_req, res) => {
+  res.sendFile(path.join(frontendPath, "index.html"));
+});
 
 export default app;
