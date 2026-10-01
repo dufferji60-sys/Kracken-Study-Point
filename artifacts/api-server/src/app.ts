@@ -49,7 +49,7 @@ const __dirname = path.dirname(__filename);
 
 const frontendPath = path.resolve(
   __dirname,
-  "../../kraken-study/dist/public",
+  "../../kracken-study/dist/public",
 );
 
 app.use(express.static(frontendPath));
