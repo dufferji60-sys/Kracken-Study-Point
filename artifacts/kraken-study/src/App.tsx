@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider, useQueryClient } from '@tanstack/reac
 // @ts-ignore The workspace package declaration may lag the generated client source during local typecheck.
 import {
   ArrowRight, ArrowUpRight, BarChart3, BookOpen, Check, ChevronRight, CircleAlert,
-  Download, ExternalLink, Eye, FileText, Instagram, LayoutDashboard, Library, Lock,
+  ExternalLink, Eye, FileText, Instagram, LayoutDashboard, Library, Lock,
   LogOut, Menu, Pencil, Plus, RefreshCw, Search, Settings, Shield, SlidersHorizontal,
   Trash2, Upload, UserRound, Users, X,
 } from 'lucide-react';
@@ -134,11 +134,10 @@ function ResourceViewPage() {
           <h1 data-testid="text-resource-title" className="mt-3 font-serif text-3xl sm:text-4xl">{resource.title}</h1>
           <p className="mt-2 text-sm text-primary-foreground/55">{resource.fileName}</p>
         </div>
-        {resource.fileUrl && <a data-testid="button-download-resource" href={resource.fileUrl} download={resource.fileName} className="inline-flex w-fit items-center gap-2 rounded-xl bg-accent px-4 py-3 text-xs font-bold text-primary"><Download size={15} /> Download file</a>}
       </div>
       <div className="mt-8 grid min-h-[60vh] place-items-center rounded-2xl border border-primary-foreground/10 bg-primary-foreground/[.04]">
         {resource.fileUrl && resource.fileName.toLowerCase().endsWith('.pdf')
-          ? <iframe title={resource.title} src={resource.fileUrl} className="h-[70vh] w-full rounded-2xl bg-card" />
+          ? <iframe title={resource.title} src={`${resource.fileUrl}#toolbar=0&navpanes=0&scrollbar=0`} className="h-[70vh] w-full rounded-2xl bg-card" />
           : resource.fileUrl
             ? <img src={resource.fileUrl} alt={resource.title} className="max-h-[70vh] max-w-full rounded-xl object-contain" />
             : <div className="text-center"><FileText className="mx-auto text-accent" size={30} /><p className="mt-4 font-serif text-xl">No file is attached</p><p className="mt-2 max-w-sm text-sm leading-6 text-primary-foreground/50">Ask an administrator to add a resource file.</p></div>}
