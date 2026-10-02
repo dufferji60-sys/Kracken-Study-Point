@@ -574,7 +574,20 @@ router.get("/search", async (req: AuthedRequest, res) => {
   res.json([
     ...trades.map((trade) => ({ id: trade.id, type: "trade", title: trade.name, subtitle: trade.description, href: `/trades/${trade.id}` })),
     ...chapters.map((row) => ({ id: row.chapter.id, type: "chapter", title: row.chapter.name, subtitle: row.tradeName, href: `/chapters/${row.chapter.id}` })),
-    ...resources.map((row) => ({ id: row.resource.id, type: "resource", title: row.resource.title, subtitle: row.chapterName, href: `/resources/${row.resource.id}/view` })),
+    ...resources.map((row) => {
+      const params = new URLSearchParams({
+        file: row.resource.fileUrl || "",
+        title: row.resource.title || "Original study resource",
+        name: row.resource.fileName || "resource.pdf",
+      });
+      return {
+        id: row.resource.id,
+        type: "resource",
+        title: row.resource.title,
+        subtitle: row.chapterName,
+        href: `/resources/${row.resource.id}/view?${params.toString()}`,
+      };
+    }),
   ]);
 });
 
