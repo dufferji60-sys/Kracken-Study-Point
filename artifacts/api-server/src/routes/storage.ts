@@ -67,7 +67,14 @@ router.post(
       );
     } catch (error) {
       req.log.error({ err: error }, 'Error generating upload URL');
-      res.status(500).json({ error: 'Failed to generate upload URL' });
+      const missingVariable = error instanceof Error
+        ? error.message.match(/^(STORAGE_[A-Z0-9_]+) must be configured/)
+        : null;
+      res.status(500).json({
+        error: missingVariable
+          ? `File storage is not configured. Add ${missingVariable[1]} in Render Environment.`
+          : 'Failed to generate upload URL. Check the S3-compatible storage endpoint, bucket, and credentials.',
+      });
     }
   },
 );
